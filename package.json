@@ -1,7 +1,7 @@
 {
     "name": "travel-time",
     "version": "1.0.0",
-    "description": "A MEAN app to for travel-time",
+    "description": "A MEAN app for travel-time",
     "main": "server.js",
     "scripts": {
     	"test": "echo \"Error: no test specified\" && exit 1",
@@ -11,5 +11,5 @@
         "express": "~4.0.0",
         "mongoose": "~3.6.13",
         "body-parser": "~1.0.1"
-    },
+   	}
 }
