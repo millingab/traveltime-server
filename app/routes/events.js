@@ -4,6 +4,11 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Event = require('../models/event.js');
 
+function handleError(res, reason, message, code) {
+	console.log("ERROR: " + reason);
+	res.status(code || 500).json({"error": message});
+}
+
 // /events
 router.route('/')
 	
@@ -12,9 +17,12 @@ router.route('/')
 		var event = new Event();
 		event.name = req.body.name;
 
+		if (!(req.body.name)) 
+			handleError(res, "Invalid user input", "Must provide a event name", 400);
+
 		event.save(function(err) {
 			if(err)
-				res.send(err);
+				handleError(res, err.message ,"Failed to create a new event");
 
 			res.json({message: 'Event created!'});
 		});
@@ -24,7 +32,7 @@ router.route('/')
 	.get(function(req,res) {
 		Event.find(function(err, events){
 			if(err)
-				res.send(err);
+				handleError(res, "Server Error" ,"Failed to fetch events", 500);
 
 			res.json(events);
 		});
@@ -36,7 +44,7 @@ router.route('/:event_id')
 	.get(function(req,res) {
 		Event.findById(req.params.event_id, function(err,event){
 			if(err)
-				res.send(err);
+				handleError(res, "Bad Request" ,"Event does not exist", 400);
 
 			res.json(event);
 		});
@@ -51,7 +59,7 @@ router.route('/:event_id')
 
 			event.save(function(err) {
 				if(err)
-					res.send(err);
+					handleError(res, "Bad Request" ,"Event does not exist", 400);
 
 				res.json({message: 'Event updated!'});
 			});
@@ -63,7 +71,7 @@ router.route('/:event_id')
 			_id: req.params.event_id
 		},function(err, bear){
 			if(err)
-				res.send(err);
+				handleError(res, "Bad Request" ,"Event does not exist", 400);
 
 			res.json({message: 'Successfully deleted'});
 		});
