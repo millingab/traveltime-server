@@ -76,6 +76,45 @@ router.route('/events')
 		});
 	});
 
+router.route('/events/:event_id')
+
+	//GET
+	.get(function(req,res) {
+		Event.findById(req.params.event_id, function(err,event){
+			if(err)
+				res.send(err);
+
+			res.json(event);
+		});
+	})
+
+	.put(function(req,res){
+		Event.findById(req.params.event_id, function(err,event){
+			if(err)
+				res.send(err);
+
+			event.name = req.body.name;
+
+			event.save(function(err) {
+				if(err)
+					res.send(err);
+
+				res.json({message: 'Event updated!'});
+			});
+		});
+	})
+
+	.delete(function(req,res){
+		Event.remove({
+			_id: req.params.event_id
+		},function(err, bear){
+			if(err)
+				res.send(err);
+
+			res.json({message: 'Successfully deleted'});
+		});
+	});
+
 // START THE SERVER
 // ==================================================
 
