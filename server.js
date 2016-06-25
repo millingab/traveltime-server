@@ -16,11 +16,17 @@ var port = process.env.PORT || 8080;
 
 // setting up mongoDB 
 
-var uristring = process.env.MONGODB_URI;
+var uristring = process.env.MONGODB_URI || 'mongodb://heroku_6v9hlx8r:hng9lun94e5u1b5hg5q0ln9mrn@ds023684.mlab.com:23684/heroku_6v9hlx8r';
 
 var mongoose = require('mongoose');
-console.log(uristring);
-//mongoose.connect(uristring);
+mongoose.connect(uristring, function(err,res){
+	if (err) {
+		console.log('ERROR connecting to: '+ uristring + '. ' + err);	
+	}
+	else {
+		console.log('Connected to mongoDB');
+	}
+});
 
 // pulling Schemas
 var Event = require('./app/models/event');
@@ -43,6 +49,32 @@ router.get('/', function(req, res){
 
 // registering the routes
 app.use('/api', router);
+
+// /events
+router.route('/events')
+	
+	// POST 
+	.post(function(req, res){
+		var event = new Event();
+		event.name = req.body.name;
+
+		event.save(function(err) {
+			if(err)
+				res.send(err);
+
+			res.json({message: 'Event created!'});
+		});
+	})
+
+	// GET
+	.get(function(req,res) {
+		Event.find(function(err, events){
+			if(err)
+				res.send(err);
+
+			res.json(events);
+		});
+	});
 
 // START THE SERVER
 // ==================================================
