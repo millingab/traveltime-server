@@ -34,86 +34,12 @@ var Event = require('./app/models/event');
 // ROUTES
 // ==================================================
 
-var router = express.Router();		
-
-// middleware to use for all requests
-router.use(function(req,res,next){
-	console.log('Request received by the API');
-	next();
-});
-
-// testing the route
-router.get('/', function(req, res){
-	res.json({message: 'Welcome to Travel Time'});
-});
+var router = require('./app/routes/index');		
+var events_router = require('./app/routes/events');
 
 // registering the routes
 app.use('/api', router);
-
-// /events
-router.route('/events')
-	
-	// POST 
-	.post(function(req, res){
-		var event = new Event();
-		event.name = req.body.name;
-
-		event.save(function(err) {
-			if(err)
-				res.send(err);
-
-			res.json({message: 'Event created!'});
-		});
-	})
-
-	// GET
-	.get(function(req,res) {
-		Event.find(function(err, events){
-			if(err)
-				res.send(err);
-
-			res.json(events);
-		});
-	});
-
-router.route('/events/:event_id')
-
-	//GET
-	.get(function(req,res) {
-		Event.findById(req.params.event_id, function(err,event){
-			if(err)
-				res.send(err);
-
-			res.json(event);
-		});
-	})
-
-	.put(function(req,res){
-		Event.findById(req.params.event_id, function(err,event){
-			if(err)
-				res.send(err);
-
-			event.name = req.body.name;
-
-			event.save(function(err) {
-				if(err)
-					res.send(err);
-
-				res.json({message: 'Event updated!'});
-			});
-		});
-	})
-
-	.delete(function(req,res){
-		Event.remove({
-			_id: req.params.event_id
-		},function(err, bear){
-			if(err)
-				res.send(err);
-
-			res.json({message: 'Successfully deleted'});
-		});
-	});
+app.use ('/api/events', events_router);
 
 // START THE SERVER
 // ==================================================
