@@ -14,7 +14,7 @@ var EventSchema = new Schema({
     lon: Number
   },
   note: String,
-  users: [String]
+  users: [{type: Schema.ObjectId, ref: 'User'}]
 });
 
 module.exports = mongoose.model('Event', EventSchema);

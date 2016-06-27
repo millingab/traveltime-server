@@ -98,7 +98,12 @@ router.route('/:event_id/users')
     Event.findById(req.params.event_id, function(err,event){
       if (err)
         handleError(res, "Bad Request", "Event does not exist", 400);
-      //event.users.push(req.body.id);
+      User.findById(req.body.id, function(err,user) {
+        if (err)
+          handleError(res, "Server Error", "User not found", 500)
+        event.users.push(req.body.id);
+        user.events.push(req.params.event_id);
+      });
       event.save(function (err, event) {
         if (err)
           handleError(res, err.message, "Failed to add the user");
@@ -117,10 +122,21 @@ router.route('/:event_id/users')
 
       Event.find({'_id': { $in: event.users} }, function(err,users){
         if (err)
-          handleError(res, "Server Error", "Users not found", 500);
+          handleError(res, "Server Error", "One or more user ids is/are not in database", 500);
         res.json(users)    
       });
     });
   });
+
+  // router.route('/:event_id/users/:user_id')
+
+  // //DELETE
+  // .delete(function(req,res){
+  //   Event.findById(req.params.event_id, function (err, event) {
+  //     if (err)
+  //       handleError(res, "Bad Request", "Event does not exist", 400);
+  //     event.users.
+  //   });
+  // });
 
 module.exports = router;

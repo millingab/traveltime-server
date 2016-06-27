@@ -10,7 +10,7 @@ var UserSchema = new Schema({
     lat: Number,
     lon: Number
   },
-  events: [String]
+  events: [{type: Schema.ObjectId, ref:'Event'}]
 });
 
 module.exports = mongoose.model('User', UserSchema);
