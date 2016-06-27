@@ -13,7 +13,8 @@ var EventSchema = new Schema({
     lat: Number,
     lon: Number
   },
-  note: String
+  note: String,
+  users: [String]
 });
 
 module.exports = mongoose.model('Event', EventSchema);
