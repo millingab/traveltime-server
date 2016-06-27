@@ -23,16 +23,17 @@ router.route('/')
 
     if (!(req.body.name))
       handleError(res, "Invalid user input", "Must provide a event name", 400);
+    else {
+      event.save(function (err, event) {
+        if (err)
+          handleError(res, err.message, "Failed to create a new event");
 
-    event.save(function (err, event) {
-      if (err)
-        handleError(res, err.message, "Failed to create a new event");
-
-      res.json({
-        id: event._id,
-        message: 'Event created!'
+        res.json({
+          id: event._id,
+          message: 'Event created!'
+        });
       });
-    });
+    }
   })
 
 // GET
