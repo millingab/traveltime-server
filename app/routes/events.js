@@ -40,7 +40,7 @@ router.route('/')
   .get(function (req, res) {
     Event.find(function (err, events) {
       if (err)
-        handleError(res, "Server Error", "Failed to fetch events", 500);
+        handleError(res, "Server Error", "Failed to fetch events");
 
       res.json(events);
     });
@@ -99,17 +99,24 @@ router.route('/:event_id/users')
     Event.findById(req.params.event_id, function(err,event){
       if (err)
         handleError(res, "Bad Request", "Event does not exist", 400);
-      User.findById(req.body.id, function(err,user) {
+      User.findById(mongoose.Types.ObjectId(req.body.id), function(err,user) {
         if (err)
-          handleError(res, "Server Error", "User not found", 500)
-        event.users.push(req.body.id);
+          handleError(res, "Server Error", "User not found")
+        
         user.events.push(req.params.event_id);
-      });
-      event.save(function (err, event) {
-        if (err)
-          handleError(res, err.message, "Failed to add the user");
-        res.json({
-          message: 'User added!'
+        event.users.push(mongoose.Types.ObjectId(req.body.id));
+        
+        console.log(event);
+        console.log(user);
+        user.save(function(err,user) {if (err) handleError(res, err.message, "Failed to update the user");});
+
+        event.save(function (err, event) {
+          if (err){
+            handleError(res, err.message, "Failed to add the user");
+          }
+          res.json({
+            message: 'User added!'
+          });
         });
       });
     });
@@ -123,7 +130,7 @@ router.route('/:event_id/users')
 
       Event.find({'_id': { $in: event.users} }, function(err,users){
         if (err)
-          handleError(res, "Server Error", "One or more user ids is/are not in database", 500);
+          handleError(res, "Server Error", "One or more user ids is/are not in database");
         res.json(users)    
       });
     });

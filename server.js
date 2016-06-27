@@ -30,16 +30,19 @@ mongoose.connect(uristring, function(err,res){
 
 // pulling Schemas
 var Event = require('./app/models/event');
+var User = require('./app/models/user');
 
 // ROUTES
 // ==================================================
 
 var router = require('./app/routes/index');		
 var events_router = require('./app/routes/events');
+var users_router = require('./app/routes/users');
 
 // registering the routes
 app.use('/api', router);
-app.use ('/api/events', events_router);
+app.use('/api/events', events_router);
+app.use('/api/users', users_router);
 
 // START THE SERVER
 // ==================================================
